@@ -17,8 +17,7 @@ class DummyTest(test_utils.BaseCharmTest):
         """Run class setup for running tests."""
         super().setUpClass(application_name="dummy", model_alias=model_alias)
 
-    @classmethod
-    def tearDown(cls):
+    def tearDown(self):
         """Remove test resources."""
         logging.info("Running teardown")
 
