@@ -23,6 +23,9 @@ class DummyTest(test_utils.BaseCharmTest):
 
     def test_service_alive(self):
         """Test that Apache service is listening on expected port."""
+        self._check_service_alive()
+
+    def _check_service_alive(self):
         config = zaza_model.get_application_config(self.application_name)
         port = config["port"]["value"]
         address = zaza_model.get_unit_public_address(self.tested_unit)
@@ -36,4 +39,12 @@ class DummyTest(test_utils.BaseCharmTest):
 
         self.assertEqual(response.status, 200)
 
+    def test_action_restart(self):
+        """Test service alive after restart action."""
+        zaza_model.block_until_all_units_idle(timeout=60)
+        self.tested_unit.run_action(
+            action_name="restart",
+        )
+        zaza_model.block_until_all_units_idle(timeout=60)
 
+        self._check_service_alive()
