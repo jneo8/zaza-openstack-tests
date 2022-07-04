@@ -48,3 +48,20 @@ class DummyTest(test_utils.BaseCharmTest):
         zaza_model.block_until_all_units_idle(timeout=60)
 
         self._check_service_alive()
+
+    def test_config_change(self):
+        """Test config change actually work.
+
+        Steps:
+            - Change config port.
+            - Service alive on different port.
+        """
+        # Dict of charm settings to change to
+        alternate_config = {"port": "8080"}
+        default_config = {"port": "80"}
+
+        with self.config_change(
+            alternate_config=alternate_config,
+            default_config=default_config,
+        ):
+            self._check_service_alive()
