@@ -65,3 +65,20 @@ class DummyTest(test_utils.BaseCharmTest):
             default_config=default_config,
         ):
             self._check_service_alive()
+
+    def test_action_start_stop(self):
+        """Test "stop" and "start" actions."""
+        active_code = "0"
+        logging.info("Running stop action")
+        zaza_model.run_action(self.tested_unit.name, "stop")
+
+        result = zaza_model.run_on_unit(self.tested_unit.name,
+                                        "systemctl is-active apache2")
+        logging.info("apache2 service is: %s" % result["Stdout"])
+        self.assertNotEqual(result["Code"], active_code)
+
+        zaza_model.run_action(self.tested_unit.name, "start")
+        result = zaza_model.run_on_unit(self.tested_unit.name,
+                                        "systemctl is-active apache2")
+        logging.info("apache2 service is: %s" % result["Stdout"])
+        self.assertEqual(result["Code"], active_code)
